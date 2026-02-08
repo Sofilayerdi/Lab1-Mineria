@@ -1,6 +1,11 @@
 #Laboratorio 1
 #Sofia Lopez
 
+library(tidyverse)
+library(dplyr)
+
+
+
 movies <- read.csv("movies_2026.csv")
 
 
@@ -123,7 +128,100 @@ table(movies$originalLanguage)
 table(movies$releaseDate)
 
 
+#Ejercicio 4
+
+#1
+head(movies[order(movies$budget, decreasing = TRUE), c("title", "budget")],10)
 
 
+#2
+head(movies[order(movies$revenue, decreasing = TRUE), c("title", "revenue")],10)
+
+#3
+head(movies[order(movies$voteCount, decreasing = TRUE), c("title", "voteCount")],1)
+
+#4
+head(movies[order(movies$voteCount, decreasing = FALSE), c("title", "voteCount")],1)
+
+#5
+tabYear <- table(movies$releaseYear)
+tabYear
+
+barplot(tabYear,                    
+        main="Peliculas por año",        
+        xlab="Años de publicación", 
+        ylab="Número de películas"
+) 
+
+#Año con mayor publicaciones?
+head(tabYear[order(tabYear, decreasing = TRUE)], 1)
+
+#6
+
+#genero principal de las peliculas mas recientes
+allGenres <- unlist(strsplit(movies$genres, "\\|"))
+top20 <- movies[order(movies$releaseYear, decreasing = TRUE), ][1:20, ]
+
+top20genres <- unlist(strsplit(top20$genres, "\\|"))
+
+tableRecent <- table(top20genres)
+
+barplot(
+  tableRecent,
+  main = "Géneros de las 20 películas más recientes",
+  xlab = "Género",
+  ylab = "Frecuencia",
+  col = "lightblue",
+  las = 2
+)
+
+#genero que predomina
+genre_all <- table(allGenres)
+
+barplot(
+  genre_all,
+  main = "Distribución de géneros en todo el dataset",
+  xlab = "Género",
+  ylab = "Frecuencia",
+  col = "lightgreen",
+)
+
+names(which.max(genre_all))
 
 
+#genero de las peliculas mas largas
+longMovies <- movies[order(movies$runtime, decreasing = TRUE), ][1:20, ]
+
+genresLong <- unlist(strsplit(longMovies$genres, "\\|"))
+
+tableLong <- table(genresLong)
+tableLong
+
+barplot(
+  tableLong,
+  main = "Generos de las peliculas mas largas",
+  xlab = "Genero",
+  ylab = "Frecuencia",
+  col = "pink"
+)
+
+#7
+movies$profit <- movies$revenue - movies$budget
+
+movies_clean <- movies[!is.na(movies$profit) & !is.na(movies$genres), ]
+
+genresRevenue <- strsplit(movies_clean$genres, "\\|")
+
+genres_x <- data.frame(
+  genre = unlist(genresRevenue),
+  profit = rep(movies_clean$profit, times = sapply(genresRevenue, length))
+)
+
+profit_by_genre <- aggregate(profit ~ genre, data = genres_x, sum)
+
+
+profit_by_genre <- profit_by_genre[
+  order(profit_by_genre$profit, decreasing = TRUE),
+]
+
+profit_by_genre[1, ]
