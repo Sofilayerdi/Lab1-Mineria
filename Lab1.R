@@ -225,3 +225,23 @@ profit_by_genre <- profit_by_genre[
 ]
 
 profit_by_genre[1, ]
+
+#8
+cor(movies$actorsAmount,movies$revenue)
+
+plot(
+  movies$actorsAmount,
+  movies$revenue,
+  xlab = "Cantidad de actores",
+  ylab = "Ingresos",
+  main = "Relación entre número de actores e ingresos",
+  pch = 19,
+  col = "purple"
+)
+
+abline(
+  lm(revenue ~ actorsAmount, data = movies),
+  col = "salmon",
+  lwd = 2
+)
+

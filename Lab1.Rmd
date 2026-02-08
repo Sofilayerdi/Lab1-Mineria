@@ -4,13 +4,19 @@ author: "Sofia Lopez"
 date: "2026-02-03"
 output: html_document
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
 
-```{r}
-knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
 
 movies <- read.csv("movies_2026.csv")
 
-#Ejercicio 1
+```
+
+Ejercicio 1
+```{r}
+
 summary(movies)
 str(movies)
 dim(movies)
@@ -19,21 +25,58 @@ table(movies$originalLanguage)
 table(movies$video)
 table(movies$releaseYear)
 
-#Ejercicio 2
-tablaTipos <- data.frame(
-  Variable = names(movies),
-  Tipo = sapply(movies, function(x) {
-    if (is.numeric(x)) {
-      "Cuantitativa"
-    } else {
-      "Cualitativa"
-    }
-  })
+```
+Ejercicio 2
+
+```{r}
+
+var_types <- c(
+  id                       = "Cualitativa nomina",
+  budget                   = "Cuantitativa continua",
+  genres                   = "Cualitativa nominal",
+  homePage                 = "Cualitativa nominal",
+  productionCompany        = "Cualitativa nominal",
+  productionCompanyCountry = "Cualitativa nominal",
+  productionCountry        = "Cualitativa nominal",
+  revenue                  = "Cuantitativa continua",
+  runtime                  = "Cuantitativa continua",
+  video                    = "Cualitativa nominal (categorica)",
+  director                 = "Cualitativa nominal",
+  actors                   = "Cualitativa nominal",
+  actorsPopularity         = "Cuantitativa continua",
+  actorsCharacter          = "Cualitativa nominal",
+  originalTitle            = "Cualitativa nominal",
+  title                    = "Cualitativa nominal",
+  originalLanguage         = "Cualitativa nominal",
+  popularity               = "Cuantitativa continua",
+  releaseDate              = "Cualitativa ordinal",
+  voteAvg                  = "Cuantitativa continua",
+  voteCount                = "Cuantitativa discreta",
+  genresAmount             = "Cuantitativa discreta",
+  productionCoAmount       = "Cuantitativa discreta",
+  productionCountriesAmount= "Cuantitativa discreta",
+  actorsAmount             = "Cuantitativa discreta",
+  castWomenAmount          = "Cuantitativa discreta",
+  castMenAmount            = "Cuantitativa discreta",
+  releaseYear              = "Cuantitativa discreta"
 )
 
-tablaTipos
-tablaTipos <- edit(tablaTipos)
-tablaTipos
+
+varType <- var_types[names(var_types) %in% names(movies)]
+
+typesTable <- data.frame(
+  Variable = names(varType),
+  Tipo     = unname(varType),
+  row.names = NULL
+)
+
+typesTable
+
+```
+
+Ejercicio 3
+
+```{r}
 
 #Ejercicio 3
 hist(movies$budget[!is.na(movies$budget)],
@@ -134,6 +177,8 @@ table(movies$releaseDate)
 
 
 ```
+
+
 
 #Ejercicio 4
 1. ¿Cuáles son las 10 películas que contaron con más presupuesto?
